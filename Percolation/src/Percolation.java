@@ -7,7 +7,7 @@ public class Percolation {
     private final int n;
     private int numOpenSite;
     private final boolean[][] Node;
-    WeightedQuickUnionUF qu;
+    private WeightedQuickUnionUF qu;
     public Percolation(int n) {
         if (n <= 0) {
             throw new IllegalArgumentException();
@@ -37,10 +37,10 @@ public class Percolation {
             qu.union(index(row,col),index(row+1,col));
         }
         if(col > 1 && isOpen(row,col-1)) {
-            qu.union(index(row,col),index(row,col+1));
+            qu.union(index(row,col),index(row,col-1));
         }
         if(col < n && isOpen(row,col+1)) {
-            qu.union(index(row,col),index(row,col-1));
+            qu.union(index(row,col),index(row,col+1));
         }
     }
 
