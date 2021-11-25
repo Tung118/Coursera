@@ -10,7 +10,7 @@ public class FastCollinearPoints {
 
     public FastCollinearPoints(Point[] points) {
         checkPoint(points);
-        ArrayList<LineSegment> storeSegments = new ArrayList<LineSegment>();
+        ArrayList<LineSegment> Segments = new ArrayList<LineSegment>();
         Point[] cpy = Arrays.copyOf(points, points.length);
         for (Point point : points) {
             Arrays.sort(cpy, point.slopeOrder());
@@ -25,7 +25,7 @@ public class FastCollinearPoints {
                     if (count >= 3) {
                         Arrays.sort(cpy, i - count, i);
                         if (point.compareTo(cpy[i - count]) < 0) {
-                            storeSegments.add(new LineSegment(point, cpy[i - 1]));
+                            Segments.add(new LineSegment(point, cpy[i - 1]));
                         }
                     }
                     slope = point.slopeTo(cpy[i]);
@@ -35,10 +35,10 @@ public class FastCollinearPoints {
             if (count >= 3) {
                 Arrays.sort(cpy, i - count, i);
                 if (point.compareTo(cpy[i - count]) < 0)
-                    storeSegments.add(new LineSegment(point, cpy[i - 1]));
+                    Segments.add(new LineSegment(point, cpy[i - 1]));
             }
         }
-        lineSegments = storeSegments.toArray(new LineSegment[storeSegments.size()]);
+        lineSegments = Segments.toArray(new LineSegment[Segments.size()]);
     }
 
     public int numberOfSegments() {
