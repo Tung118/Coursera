@@ -1,36 +1,64 @@
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
+
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 public class FastCollinearPoints {
-    private  List<LineSegment> lineSegments;
-    private final Point[] points;
+    private LineSegment[] lineSegments;
+
     public FastCollinearPoints(Point[] points) {
         checkPoint(points);
-        this.points = points.clone();
-        lineSegments = new ArrayList<>();
-
+        ArrayList<LineSegment> storeSegments = new ArrayList<LineSegment>();
+        Point[] cpy = Arrays.copyOf(points, points.length);
+        for (Point point : points) {
+            Arrays.sort(cpy, point.slopeOrder());
+            double slope = point.slopeTo(cpy[0]);
+            int count = 1, i;
+            for (i = 1; i < cpy.length; i++) {
+                if (point.slopeTo(cpy[i]) == slope) {
+                    count++;
+                    continue;
+                }
+                else {
+                    if (count >= 3) {
+                        Arrays.sort(cpy, i - count, i);
+                        if (point.compareTo(cpy[i - count]) < 0) {
+                            storeSegments.add(new LineSegment(point, cpy[i - 1]));
+                        }
+                    }
+                    slope = point.slopeTo(cpy[i]);
+                    count = 1;
+                }
+            }
+            if (count >= 3) {
+                Arrays.sort(cpy, i - count, i);
+                if (point.compareTo(cpy[i - count]) < 0)
+                    storeSegments.add(new LineSegment(point, cpy[i - 1]));
+            }
+        }
+        lineSegments = storeSegments.toArray(new LineSegment[storeSegments.size()]);
     }
 
     public int numberOfSegments() {
-        return lineSegments.size();
+        return lineSegments.length;
     }
 
     public LineSegment[] segments() {
-        return lineSegments.toArray(new LineSegment[lineSegments.size()]);
+        return lineSegments.clone();
     }
     private void checkPoint(Point[] points){
         if(points == null) {
             throw new IllegalArgumentException();
         }
         for (int i = 0; i < points.length; i ++) {
-            for(int j = i; j < points.length; j++) {
-                if(points[i] == null) {
-                    throw new IllegalArgumentException();
-                }
-                if(i != j && points[i].compareTo(points[j]) == 0) {
+            if(points[i] == null) {
+                throw new IllegalArgumentException();
+            }
+            for(int j = i+1; j < points.length; j++) {
+                if(points[j] == null) throw new IllegalArgumentException();
+                if(points[i].compareTo(points[j]) == 0) {
                     throw new IllegalArgumentException();
                 }
             }
@@ -65,5 +93,4 @@ public class FastCollinearPoints {
         }
         StdDraw.show();
     }
-
 }
