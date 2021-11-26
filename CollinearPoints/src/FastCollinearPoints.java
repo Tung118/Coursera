@@ -4,49 +4,48 @@ import edu.princeton.cs.algs4.StdOut;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class FastCollinearPoints {
-    private LineSegment[] lineSegments;
+    private List<LineSegment> lineSegments;
 
     public FastCollinearPoints(Point[] points) {
         checkPoint(points);
-        ArrayList<LineSegment> Segments = new ArrayList<LineSegment>();
+        lineSegments = new ArrayList<LineSegment>();
         Point[] cpy = Arrays.copyOf(points, points.length);
-        for (Point point : points) {
-            Arrays.sort(cpy, point.slopeOrder());
-            double slope = point.slopeTo(cpy[0]);
-            int count = 1, i;
-            for (i = 1; i < cpy.length; i++) {
-                if (point.slopeTo(cpy[i]) == slope) {
+        for (int i=0;i<points.length;i++) {
+            Arrays.sort(cpy, points[i].slopeOrder());
+            double slope = points[i].slopeTo(cpy[0]);
+            int count = 1, j;
+            for (j = 1; j < cpy.length; j++) {
+                if (points[i].slopeTo(cpy[j]) == slope) {
                     count++;
-                    continue;
                 }
                 else {
                     if (count >= 3) {
-                        Arrays.sort(cpy, i - count, i);
-                        if (point.compareTo(cpy[i - count]) < 0) {
-                            Segments.add(new LineSegment(point, cpy[i - 1]));
+                        Arrays.sort(cpy, j - count, j);
+                        if (points[i].compareTo(cpy[j - count]) < 0) {
+                            lineSegments.add(new LineSegment(points[i], cpy[j - 1]));
                         }
                     }
-                    slope = point.slopeTo(cpy[i]);
+                    slope = points[i].slopeTo(cpy[j]);
                     count = 1;
                 }
             }
             if (count >= 3) {
-                Arrays.sort(cpy, i - count, i);
-                if (point.compareTo(cpy[i - count]) < 0)
-                    Segments.add(new LineSegment(point, cpy[i - 1]));
+                Arrays.sort(cpy, j - count, j);
+                if (points[i].compareTo(cpy[j - count]) < 0)
+                    lineSegments.add(new LineSegment(points[i], cpy[j - 1]));
             }
         }
-        lineSegments = Segments.toArray(new LineSegment[Segments.size()]);
     }
 
     public int numberOfSegments() {
-        return lineSegments.length;
+        return lineSegments.size();
     }
 
     public LineSegment[] segments() {
-        return lineSegments.clone();
+        return lineSegments.toArray(new LineSegment[lineSegments.size()]);
     }
     private void checkPoint(Point[] points){
         if(points == null) {
