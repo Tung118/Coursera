@@ -15,9 +15,9 @@ public class BruteCollinearPoints {
         this.points = points.clone();
         Arrays.sort(this.points);
         for(int i=0;i<this.points.length-3;i++) {
-            for(int j=i;j<this.points.length-2;j++) {
-                for(int k=j;k<this.points.length-1;k++) {
-                    for(int l=j;l<this.points.length;l++) {
+            for(int j=i+1;j<this.points.length-2;j++) {
+                for(int k=j+1;k<this.points.length-1;k++) {
+                    for(int l=j+1;l<this.points.length;l++) {
                         if(this.points[i].slopeTo(this.points[j]) == this.points[j].slopeTo(this.points[k]) &&
                                 this.points[j].slopeTo(this.points[k]) == this.points[k].slopeTo(this.points[l])) {
                             lineSegmentList.add(new LineSegment(this.points[i], this.points[l]));
